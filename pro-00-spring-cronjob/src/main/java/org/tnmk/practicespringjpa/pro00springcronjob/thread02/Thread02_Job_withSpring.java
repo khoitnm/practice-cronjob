@@ -7,6 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
+import org.tnmk.practicespringjpa.pro00springcronjob.Starter;
 import org.tnmk.practicespringjpa.pro00springcronjob.common.utils.ThreadUtils;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -34,6 +35,13 @@ public class Thread02_Job_withSpring {
         }
     }
 
+    /**
+     * By default, this job will never be finished because it's just run at fixed rate.
+     * However, we need it to stop when other jobs are finished,
+     * that's why in {@link Starter},
+     * we apply {@code ((ConfigurableApplicationContext) context).close()},
+     * that method will trigger this {@link #end()} method.
+     */
     @EventListener(ContextClosedEvent.class)
     public void end() {
         log.info("Thread02: force ending: start...");
