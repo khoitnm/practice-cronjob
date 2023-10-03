@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 
@@ -19,17 +20,15 @@ import java.util.function.Supplier;
 public class SchedulerService {
   static AtomicInteger methodCount = new AtomicInteger(0);
 
-  public <O> List<TaskResult<O>> awaitUntilFinish(int executionsPerSecond, int totalDurationSeconds, Supplier<O> supplier) {
+  public <O> List<TaskResult<O>> awaitUntilFinish(int executionsPerSecond, int totalDurationSeconds, Function<Integer, O> supplier) {
     List<TaskResult<O>> results = Collections.synchronizedList(new ArrayList<>());
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    int totalExecutions = executionsPerSecond * totalDurationSeconds;
 
     Runnable methodTrigger = () -> {
       try {
-        log.info("methodCount: " + methodCount + "/" + totalExecutions);
         methodCount.incrementAndGet();
 
-        O result = supplier.get();
+        O result = supplier.apply(methodCount.get());
         results.add(TaskResult.<O>builder()
           .data(result)
           .build()

@@ -2,9 +2,12 @@ package org.tnmk.practicespringjpa.pro00springcronjob.thread02;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
+import org.tnmk.practicespringjpa.pro00springcronjob.common.utils.ThreadUtils;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,12 +25,19 @@ public class Thread02_Job_withSpring {
     public void doSomething() throws InterruptedException {
         log.info("Thread02_Job_withSpring doSomething {}", count.getAndIncrement());
 
-        // Cancel the whole scheduling after 5 second.
-        if (count.get() >= 3) {
+        // Cancel the whole scheduling after 8 second.
+        if (count.get() >= 15) {
             ScheduledExecutorService executor = threadPoolTaskScheduler.getScheduledExecutor();
             executor.awaitTermination(1, TimeUnit.SECONDS);
             executor.shutdown();
-            log.info("shutdown");
+            log.info("Thread02 shutdown");
         }
+    }
+
+    @EventListener(ContextClosedEvent.class)
+    public void end() {
+        log.info("Thread02: force ending: start...");
+        ThreadUtils.sleep(2000);
+        log.info("Thread02: force ending: finished!!!");
     }
 }
