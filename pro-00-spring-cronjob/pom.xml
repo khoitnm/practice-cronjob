@@ -13,7 +13,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
 
-        <spring-boot.version>2.6.6</spring-boot.version>
+        <spring-boot.version>2.7.16</spring-boot.version>
         <testcontainers.version>1.16.3</testcontainers.version>
         <lombok.version>1.18.22</lombok.version>
 
