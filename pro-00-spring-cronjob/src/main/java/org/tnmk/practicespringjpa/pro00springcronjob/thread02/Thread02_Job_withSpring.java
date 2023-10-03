@@ -25,12 +25,12 @@ public class Thread02_Job_withSpring {
     public void doSomething() throws InterruptedException {
         log.info("Thread02_Job_withSpring doSomething {}", count.getAndIncrement());
 
-        // Cancel the whole scheduling after 8 second.
+        // We can cancel the whole scheduling if we want.
         if (count.get() >= 15) {
             ScheduledExecutorService executor = threadPoolTaskScheduler.getScheduledExecutor();
             executor.awaitTermination(1, TimeUnit.SECONDS);
             executor.shutdown();
-            log.info("Thread02 shutdown");
+            log.info("Thread02 stop after count {}.", count.get());
         }
     }
 
